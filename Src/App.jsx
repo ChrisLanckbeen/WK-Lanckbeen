@@ -17,7 +17,7 @@ const FIREBASE_CONFIG = {
 };
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG);
-const db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseApp,"(default)");
 const storage = getStorage(firebaseApp);
 
 // ===================== DATA =====================
