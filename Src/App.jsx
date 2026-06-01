@@ -9,9 +9,9 @@ import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage"
 // =====================================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyByfVq4kEFQEaXQHy8NewpPVtY22RuDPQ4",
-  authDomain: "we-lanckbeen.firebaseapp.com",
-  projectId: "we-lanckbeen",
-  storageBucket: "we-lanckbeen.firebasestorage.app",
+  authDomain: "wk-lanckbeen.firebaseapp.com",
+  projectId: "wk-lanckbeen",
+  storageBucket: "wk-lanckbeen.firebasestorage.app",
   messagingSenderId: "378857669131",
   appId: "1:378857669131:web:331baa505caef16b727d0e",
 };
