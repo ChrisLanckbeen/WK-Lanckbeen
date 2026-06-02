@@ -260,7 +260,7 @@ function useFirebaseDoc(docPath, defaultValue) {
   }, [docPath]);
   async function save(newData) { await setDoc(doc(db, docPath), newData, { merge: true }); }
   return { data, loading, save };
-  {
+}
 export default function App() {
 
   const { data: sharedData, loading, save: saveShared } = useFirebaseDoc("wk/shared", {
