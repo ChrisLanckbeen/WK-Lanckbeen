@@ -9,15 +9,15 @@ import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage"
 // =====================================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyByfVq4kEFQEaXQHy8NewpPVtY22RuDPQ4",
-  authDomain: "wk-lanckbeen.firebaseapp.com",
-  projectId: "wk-lanckbeen",
-  storageBucket: "wk-lanckbeen.firebasestorage.app",
+  authDomain: "we-lanckbeen.firebaseapp.com",
+  projectId: "we-lanckbeen",
+  storageBucket: "we-lanckbeen.firebasestorage.app",
   messagingSenderId: "378857669131",
   appId: "1:378857669131:web:331baa505caef16b727d0e",
 };
 
 const firebaseApp = initializeApp(FIREBASE_CONFIG);
-const db = getFirestore(firebaseApp,"(default)");
+const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
 // ===================== DATA =====================
@@ -40,18 +40,18 @@ function generateMatches() {
   const matches = [];
   let id = 1;
   const groupDates = {
-    A: ["11 jun", "14 jun", "17 jun", "20 jun", "23 jun", "26 jun"],
-    B: ["12 jun", "15 jun", "18 jun", "21 jun", "24 jun", "27 jun"],
-    C: ["12 jun", "15 jun", "18 jun", "21 jun", "24 jun", "27 jun"],
-    D: ["13 jun", "16 jun", "19 jun", "22 jun", "25 jun", "27 jun"],
-    E: ["13 jun", "16 jun", "19 jun", "22 jun", "25 jun", "27 jun"],
-    F: ["14 jun", "17 jun", "20 jun", "23 jun", "26 jun", "27 jun"],
-    G: ["15 jun", "18 jun", "21 jun", "24 jun", "26 jun", "27 jun"],
-    H: ["15 jun", "18 jun", "21 jun", "24 jun", "26 jun", "27 jun"],
-    I: ["16 jun", "19 jun", "22 jun", "25 jun", "26 jun", "27 jun"],
-    J: ["16 jun", "19 jun", "22 jun", "25 jun", "26 jun", "27 jun"],
-    K: ["17 jun", "20 jun", "23 jun", "26 jun", "26 jun", "27 jun"],
-    L: ["17 jun", "20 jun", "23 jun", "26 jun", "26 jun", "27 jun"],
+    A: ["11 jun", "12 jun", "18 jun", "19 jun", "25 jun"],
+    B: ["12 jun", "13 jun", "18 jun", "19 jun", "24 jun"],
+    C: ["14 jun", "20 jun", "25 juni"],
+    D: ["13 jun", "14 jun", "19 jun", "20 jun", "26 jun"],
+    E: ["14 jun", "15 jun", "20 jun", "21 jun", "25 jun"],
+    F: ["14 jun", "15 jun", "20 jun", "26 jun"],
+    G: ["15 jun", "16 jun", "21 jun", "22 jun", "27 jun"],
+    H: ["15 jun", "16 jun", "21 jun", "22 jun", "27 jun"],
+    I: ["16 jun", "17 jun", "22 jun", "23 jun", "26 jun"],
+    J: ["16 jun", "17 jun", "22 jun", "23 jun", "28 jun"],
+    K: ["17 jun", "18 jun", "23 jun", "24 jun", "28 jun"],
+    L: ["17 jun", "18 jun", "23 jun", "24 jun", "27 jun"],
   };
   Object.entries(WK_GROUPS).forEach(([grp, { teams }]) => {
     const d = groupDates[grp];
@@ -65,9 +65,45 @@ function generateMatches() {
   return matches;
 }
 
-const INITIAL_MATCHES = generateMatches();
+const KNOCKOUT_ROUNDS = ["Achtste finale", "Kwartfinale", "Halve finale", "Finale"];
 
-const TOP_SCORERS_OPTIONS = [
+const INITIAL_KNOCKOUT_MATCHES = [
+  // Achtste finales (16 wedstrijden)
+  { id: 1001, round: "Achtste finale", matchNum: 1, home: "TBD", away: "TBD", date: "1 jul", result: null },
+  { id: 1002, round: "Achtste finale", matchNum: 2, home: "TBD", away: "TBD", date: "1 jul", result: null },
+  { id: 1003, round: "Achtste finale", matchNum: 3, home: "TBD", away: "TBD", date: "2 jul", result: null },
+  { id: 1004, round: "Achtste finale", matchNum: 4, home: "TBD", away: "TBD", date: "2 jul", result: null },
+  { id: 1005, round: "Achtste finale", matchNum: 5, home: "TBD", away: "TBD", date: "3 jul", result: null },
+  { id: 1006, round: "Achtste finale", matchNum: 6, home: "TBD", away: "TBD", date: "3 jul", result: null },
+  { id: 1007, round: "Achtste finale", matchNum: 7, home: "TBD", away: "TBD", date: "4 jul", result: null },
+  { id: 1008, round: "Achtste finale", matchNum: 8, home: "TBD", away: "TBD", date: "4 jul", result: null },
+  { id: 1009, round: "Achtste finale", matchNum: 9, home: "TBD", away: "TBD", date: "5 jul", result: null },
+  { id: 1010, round: "Achtste finale", matchNum: 10, home: "TBD", away: "TBD", date: "5 jul", result: null },
+  { id: 1011, round: "Achtste finale", matchNum: 11, home: "TBD", away: "TBD", date: "6 jul", result: null },
+  { id: 1012, round: "Achtste finale", matchNum: 12, home: "TBD", away: "TBD", date: "6 jul", result: null },
+  { id: 1013, round: "Achtste finale", matchNum: 13, home: "TBD", away: "TBD", date: "7 jul", result: null },
+  { id: 1014, round: "Achtste finale", matchNum: 14, home: "TBD", away: "TBD", date: "7 jul", result: null },
+  { id: 1015, round: "Achtste finale", matchNum: 15, home: "TBD", away: "TBD", date: "8 jul", result: null },
+  { id: 1016, round: "Achtste finale", matchNum: 16, home: "TBD", away: "TBD", date: "8 jul", result: null },
+  // Kwartfinales (8 wedstrijden)
+  { id: 1017, round: "Kwartfinale", matchNum: 1, home: "TBD", away: "TBD", date: "11 jul", result: null },
+  { id: 1018, round: "Kwartfinale", matchNum: 2, home: "TBD", away: "TBD", date: "11 jul", result: null },
+  { id: 1019, round: "Kwartfinale", matchNum: 3, home: "TBD", away: "TBD", date: "12 jul", result: null },
+  { id: 1020, round: "Kwartfinale", matchNum: 4, home: "TBD", away: "TBD", date: "12 jul", result: null },
+  { id: 1021, round: "Kwartfinale", matchNum: 5, home: "TBD", away: "TBD", date: "13 jul", result: null },
+  { id: 1022, round: "Kwartfinale", matchNum: 6, home: "TBD", away: "TBD", date: "13 jul", result: null },
+  { id: 1023, round: "Kwartfinale", matchNum: 7, home: "TBD", away: "TBD", date: "14 jul", result: null },
+  { id: 1024, round: "Kwartfinale", matchNum: 8, home: "TBD", away: "TBD", date: "14 jul", result: null },
+  // Halve finales (4 wedstrijden)
+  { id: 1025, round: "Halve finale", matchNum: 1, home: "TBD", away: "TBD", date: "15 jul", result: null },
+  { id: 1026, round: "Halve finale", matchNum: 2, home: "TBD", away: "TBD", date: "15 jul", result: null },
+  { id: 1027, round: "Halve finale", matchNum: 3, home: "TBD", away: "TBD", date: "16 jul", result: null },
+  { id: 1028, round: "Halve finale", matchNum: 4, home: "TBD", away: "TBD", date: "16 jul", result: null },
+  // Finale
+  { id: 1029, round: "Finale", matchNum: 1, home: "TBD", away: "TBD", date: "19 jul", result: null },
+];
+
+const INITIAL_MATCHES = generateMatches();
   "Kylian Mbappé", "Erling Haaland", "Harry Kane", "Vinicius Jr",
   "Lionel Messi", "Cristiano Ronaldo", "Lamine Yamal", "Bukayo Saka",
   "Jude Bellingham", "Rúben Neves", "Romelu Lukaku", "Timo Werner",
@@ -158,6 +194,7 @@ function useFirebaseDoc(docPath, defaultValue) {
 export default function App() {
   const { data: sharedData, loading, save: saveShared } = useFirebaseDoc("wk/shared", {
     matches: INITIAL_MATCHES,
+    knockoutMatches: INITIAL_KNOCKOUT_MATCHES,
     topScorerGoals: {},
     globalLock: false,
   });
@@ -168,6 +205,7 @@ export default function App() {
 
   const players = playersData?.list || [];
   const matches = sharedData?.matches || INITIAL_MATCHES;
+  const knockoutMatches = sharedData?.knockoutMatches || INITIAL_KNOCKOUT_MATCHES;
   const topScorerGoals = sharedData?.topScorerGoals || {};
   const globalLock = sharedData?.globalLock || false;
 
@@ -196,6 +234,13 @@ export default function App() {
       ? updaterOrValue(matches)
       : updaterOrValue;
     await saveShared({ ...sharedData, matches: newMatches });
+  }
+
+  async function setKnockoutMatches(updaterOrValue) {
+    const newMatches = typeof updaterOrValue === "function"
+      ? updaterOrValue(knockoutMatches)
+      : updaterOrValue;
+    await saveShared({ ...sharedData, knockoutMatches: newMatches });
   }
 
   async function setTopScorerGoals(updaterOrValue) {
@@ -261,6 +306,10 @@ export default function App() {
             setActivePlayer={setActivePlayer} activeGroup={activeGroup} setActiveGroup={setActiveGroup}
             setPlayers={setPlayers} notify={notify} globalLock={globalLock} />
         )}
+        {view === "knockout" && (
+          <KnockoutView players={players} knockoutMatches={knockoutMatches} activePlayer={activePlayer}
+            setActivePlayer={setActivePlayer} setPlayers={setPlayers} notify={notify} globalLock={globalLock} />
+        )}
         {view === "overzicht" && (
           <OverzichtView players={players} matches={matches} activeGroup={activeGroup} setActiveGroup={setActiveGroup} />
         )}
@@ -268,7 +317,8 @@ export default function App() {
         {view === "admin" && adminMode && (
           <AdminView matches={matches} setMatches={setMatches} players={players}
             topScorerGoals={topScorerGoals} setTopScorerGoals={setTopScorerGoals} notify={notify}
-            globalLock={globalLock} setGlobalLock={setGlobalLock} />
+            globalLock={globalLock} setGlobalLock={setGlobalLock}
+            knockoutMatches={knockoutMatches} setKnockoutMatches={setKnockoutMatches} />
         )}
       </main>
     </div>
@@ -326,6 +376,7 @@ function Header({ view, setView, adminMode, setAdminMode, showAdminLogin, setSho
           { key: "home", label: "🏠 Home" },
           { key: "register", label: "✍️ Registreer" },
           { key: "predict", label: "⚽ Mijn voorspellingen" },
+          { key: "knockout", label: "🏆 Knock-out" },
           { key: "overzicht", label: "👁️ Overzicht" },
           { key: "ranking", label: "🥇 Ranking" },
           ...(adminMode ? [{ key: "admin", label: "🔧 Admin" }] : []),
@@ -644,6 +695,130 @@ function PredictView({ players, matches, activePlayer, setActivePlayer, activeGr
   );
 }
 
+// ===================== KNOCKOUT VIEW =====================
+function KnockoutView({ players, knockoutMatches, activePlayer, setActivePlayer, setPlayers, notify, globalLock }) {
+  const player = players.find(p => p.id === activePlayer) || players[0];
+  const [pendingPreds, setPendingPreds] = useState({});
+  const [activeRound, setActiveRound] = useState("Achtste finale");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setPendingPreds(player?.knockoutPredictions || {});
+  }, [activePlayer, player?.id]);
+
+  function setPred(matchId, val) {
+    setPendingPreds(prev => ({ ...prev, [matchId]: val }));
+  }
+
+  async function savePreds() {
+    if (!player) return;
+    if (globalLock) { notify("Ingave is geblokkeerd door Tom! 🔒", "error"); return; }
+    setSaving(true);
+    const existing = player.knockoutPredictions || {};
+    const merged = { ...existing };
+    Object.entries(pendingPreds).forEach(([mid, val]) => {
+      const m = knockoutMatches.find(x => x.id === parseInt(mid));
+      if (m && !m.result && m.home !== "TBD") merged[mid] = val;
+    });
+    await setPlayers(ps => ps.map(p => p.id === player.id ? { ...p, knockoutPredictions: merged } : p));
+    notify("Knock-out pronostieken opgeslagen! 💾");
+    setSaving(false);
+  }
+
+  const roundMatches = knockoutMatches.filter(m => m.round === activeRound);
+  const roundIcons = { "Achtste finale": "⚔️", "Kwartfinale": "🥊", "Halve finale": "🔥", "Finale": "🏆" };
+
+  if (!player) return (
+    <div style={styles.section}>
+      <h2 style={styles.sectionTitle}>🏆 Knock-out fase</h2>
+      <p style={styles.empty}>Eerst registreren! Ga naar ✍️ Registreer.</p>
+    </div>
+  );
+
+  return (
+    <div style={styles.section}>
+      <h2 style={styles.sectionTitle}>🏆 Knock-out fase</h2>
+      <div style={styles.playerSelector}>
+        {players.map(p => (
+          <button key={p.id} style={{ ...styles.playerSelectorBtn, ...(p.id === player.id ? styles.playerSelectorBtnActive : {}) }}
+            onClick={() => setActivePlayer(p.id)}>
+            {p.photo ? <img src={p.photo} alt={p.name} style={styles.selectorPhoto} /> : "👤"}
+            <span>{p.name}</span>
+          </button>
+        ))}
+      </div>
+      {globalLock && (
+        <div style={styles.globalLockBox}>
+          🚫 <b>Tom heeft alle ingave geblokkeerd.</b>
+        </div>
+      )}
+      <div style={styles.groupTabs}>
+        {KNOCKOUT_ROUNDS.map(r => (
+          <button key={r} style={{ ...styles.groupTab, ...(r === activeRound ? styles.groupTabActive : {}) }}
+            onClick={() => setActiveRound(r)}>
+            {roundIcons[r]} {r}
+          </button>
+        ))}
+      </div>
+      <div style={styles.matchList}>
+        <div style={styles.groupHeader}>{roundIcons[activeRound]} {activeRound}</div>
+        {roundMatches.map(m => {
+          const pred = pendingPreds[m.id] || "";
+          const isTBD = m.home === "TBD" || m.away === "TBD";
+          const isLocked = !!m.result || globalLock || isTBD;
+          const hasPred = pred && pred.includes("-") && pred.split("-")[0] !== "" && pred.split("-")[1] !== "";
+          const score = m.result && hasPred ? getPredScore(pred, m.result) : null;
+          const scoreColor = score === "exact" ? "#27ae60" : score === "winner" ? "#f39c12" : score === "wrong" ? "#e74c3c" : null;
+          return (
+            <div key={m.id} style={{ ...styles.matchCard, ...(m.result ? styles.matchCardLocked : hasPred ? styles.matchCardDone : {}), borderLeft: scoreColor ? `4px solid ${scoreColor}` : undefined }}>
+              <div style={styles.matchTopRow}>
+                <span style={styles.matchDate}>📅 {m.date} · Match {m.matchNum}</span>
+                {isTBD && <span style={{ ...styles.lockBadge, color: "#f39c12", border: "1px solid #f39c12", background: "rgba(243,156,18,0.1)" }}>⏳ Ploegen nog niet bekend</span>}
+                {m.result && <span style={styles.lockBadge}>🔒 Vergrendeld</span>}
+                {!m.result && !isTBD && !globalLock && hasPred && <span style={styles.editableBadge}>✏️ Wijzigen mag nog</span>}
+              </div>
+              <div style={styles.matchTeams}>
+                <span style={styles.teamName}>{FLAG_EMOJI[m.home] || ""} {m.home}</span>
+                <div style={styles.scoreInput}>
+                  {isLocked ? (
+                    <div style={styles.lockedPredDisplay}>
+                      <span style={{ ...styles.lockedScore, color: scoreColor || (isTBD ? "#7f8c8d" : "white") }}>
+                        {isTBD ? "? — ?" : hasPred ? pred : "—"}
+                      </span>
+                    </div>
+                  ) : (
+                    <>
+                      <input type="number" min="0" max="20" style={styles.scoreBox}
+                        value={pred.split("-")[0] ?? ""}
+                        onChange={e => { const parts = pred.split("-"); setPred(m.id, `${e.target.value}-${parts[1] ?? ""}`); }} />
+                      <span style={styles.scoreDash}>—</span>
+                      <input type="number" min="0" max="20" style={styles.scoreBox}
+                        value={pred.split("-")[1] ?? ""}
+                        onChange={e => { const parts = pred.split("-"); setPred(m.id, `${parts[0] ?? ""}-${e.target.value}`); }} />
+                    </>
+                  )}
+                </div>
+                <span style={{ ...styles.teamName, textAlign: "right" }}>{m.away} {FLAG_EMOJI[m.away] || ""}</span>
+              </div>
+              {m.result && (
+                <div style={styles.resultRow}>
+                  <span style={styles.resultBadge}>✅ Officiële uitslag: <b>{m.result}</b></span>
+                  {score === "exact" && <span style={styles.scoreBadgeExact}>+3 🎯 Raak!</span>}
+                  {score === "winner" && <span style={styles.scoreBadgeWinner}>+1 👍 Winnaar</span>}
+                  {score === "wrong" && hasPred && <span style={styles.scoreBadgeWrong}>0 pts ❌</span>}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <button style={{ ...styles.btnPrimary, opacity: saving ? 0.6 : 1 }} onClick={savePreds} disabled={saving}>
+        {saving ? "⏳ Opslaan..." : "💾 Bewaar knock-out voorspellingen"}
+      </button>
+    </div>
+  );
+}
+
 // ===================== OVERZICHT VIEW =====================
 function OverzichtView({ players, matches, activeGroup, setActiveGroup }) {
   const groups = Object.keys(WK_GROUPS);
@@ -763,9 +938,13 @@ function RankingView({ getRanking, topScorerGoals }) {
 }
 
 // ===================== ADMIN VIEW =====================
-function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerGoals, notify, globalLock, setGlobalLock }) {
+function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerGoals, notify, globalLock, setGlobalLock, knockoutMatches, setKnockoutMatches }) {
   const [selGroup, setSelGroup] = useState("A");
+  const [activeAdminTab, setActiveAdminTab] = useState("groep");
   const [results, setResults] = useState({});
+  const [knockoutResults, setKnockoutResults] = useState({});
+  const [knockoutTeams, setKnockoutTeams] = useState({});
+  const [activeKnockoutRound, setActiveKnockoutRound] = useState("Achtste finale");
   const [scorerInput, setScorerInput] = useState("");
   const [scorerGoalCount, setScorerGoalCount] = useState("");
   const [saving, setSaving] = useState(false);
@@ -774,7 +953,16 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
     const init = {};
     matches.forEach(m => { if (m.result) init[m.id] = m.result; });
     setResults(init);
-  }, [matches]);
+    const kinit = {};
+    const tinit = {};
+    knockoutMatches.forEach(m => {
+      if (m.result) kinit[m.id] = m.result;
+      tinit[`${m.id}_home`] = m.home !== "TBD" ? m.home : "";
+      tinit[`${m.id}_away`] = m.away !== "TBD" ? m.away : "";
+    });
+    setKnockoutResults(kinit);
+    setKnockoutTeams(tinit);
+  }, [matches, knockoutMatches]);
 
   const groups = Object.keys(WK_GROUPS);
   const groupMatches = matches.filter(m => m.group === selGroup);
@@ -787,6 +975,18 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
     setSaving(true);
     await setMatches(prev => prev.map(m => results[m.id] !== undefined ? { ...m, result: results[m.id] || null } : m));
     notify("Uitslagen opgeslagen! ✅");
+    setSaving(false);
+  }
+
+  async function saveKnockout() {
+    setSaving(true);
+    await setKnockoutMatches(prev => prev.map(m => {
+      const home = knockoutTeams[`${m.id}_home`] || m.home;
+      const away = knockoutTeams[`${m.id}_away`] || m.away;
+      const result = knockoutResults[m.id] || null;
+      return { ...m, home: home || "TBD", away: away || "TBD", result };
+    }));
+    notify("Knock-out wedstrijden opgeslagen! ✅");
     setSaving(false);
   }
 
@@ -824,43 +1024,100 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
         </div>
       </div>
 
-      <div style={styles.adminNote}>
-        ⚠️ Voer hier de officiële uitslagen in na elke gespeelde wedstrijd.<br/>
-        <b>Opgelet:</b> zodra een uitslag is ingegeven, wordt de voorspelling automatisch vergrendeld voor die match.
-      </div>
-
+      {/* ADMIN TABS */}
       <div style={styles.groupTabs}>
-        {groups.map(g => (
-          <button key={g} style={{ ...styles.groupTab, ...(g === selGroup ? styles.groupTabActive : {}) }}
-            onClick={() => setSelGroup(g)}>Poule {g}</button>
-        ))}
+        <button style={{ ...styles.groupTab, ...(activeAdminTab === "groep" ? styles.groupTabActive : {}) }}
+          onClick={() => setActiveAdminTab("groep")}>⚽ Groepsfase</button>
+        <button style={{ ...styles.groupTab, ...(activeAdminTab === "knockout" ? styles.groupTabActive : {}) }}
+          onClick={() => setActiveAdminTab("knockout")}>🏆 Knock-out</button>
+        <button style={{ ...styles.groupTab, ...(activeAdminTab === "scorer" ? styles.groupTabActive : {}) }}
+          onClick={() => setActiveAdminTab("scorer")}>🥅 Topscorer</button>
       </div>
-      <div style={styles.matchList}>
-        <div style={styles.groupHeader}>🏟️ Poule {selGroup}</div>
-        {groupMatches.map(m => (
-          <div key={m.id} style={styles.adminMatchCard}>
-            <div style={styles.adminMatchTeams}>
-              <span>{FLAG_EMOJI[m.home] || ""} {m.home} vs {m.away} {FLAG_EMOJI[m.away] || ""}</span>
-              <span style={styles.matchDateSmall}>📅 {m.date}</span>
-            </div>
-            <div style={styles.adminScoreRow}>
-              <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T"
-                value={results[m.id]?.split("-")[0] ?? ""}
-                onChange={e => { const cur = results[m.id] || "-"; const p = cur.split("-"); setRes(m.id, `${e.target.value}-${p[1] ?? ""}`); }} />
-              <span style={{ color: "#f39c12", fontWeight: "bold" }}>—</span>
-              <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T"
-                value={results[m.id]?.split("-")[1] ?? ""}
-                onChange={e => { const cur = results[m.id] || "-"; const p = cur.split("-"); setRes(m.id, `${p[0] ?? ""}-${e.target.value}`); }} />
-              {m.result && <span style={styles.savedBadge}>✅ {m.result}</span>}
-            </div>
-          </div>
-        ))}
-      </div>
-      <button style={{ ...styles.btnPrimary, opacity: saving ? 0.6 : 1 }} onClick={saveResults} disabled={saving}>
-        {saving ? "⏳ Opslaan..." : "💾 Bewaar uitslagen"}
-      </button>
 
-      <div style={styles.scorerAdmin}>
+      {activeAdminTab === "groep" && (
+        <>
+          <div style={styles.adminNote}>⚠️ Voer de officiële uitslagen in na elke gespeelde wedstrijd.</div>
+          <div style={styles.groupTabs}>
+            {groups.map(g => (
+              <button key={g} style={{ ...styles.groupTab, ...(g === selGroup ? styles.groupTabActive : {}) }}
+                onClick={() => setSelGroup(g)}>Poule {g}</button>
+            ))}
+          </div>
+          <div style={styles.matchList}>
+            <div style={styles.groupHeader}>🏟️ Poule {selGroup}</div>
+            {groupMatches.map(m => (
+              <div key={m.id} style={styles.adminMatchCard}>
+                <div style={styles.adminMatchTeams}>
+                  <span>{FLAG_EMOJI[m.home] || ""} {m.home} vs {m.away} {FLAG_EMOJI[m.away] || ""}</span>
+                  <span style={styles.matchDateSmall}>📅 {m.date}</span>
+                </div>
+                <div style={styles.adminScoreRow}>
+                  <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T"
+                    value={results[m.id]?.split("-")[0] ?? ""}
+                    onChange={e => { const cur = results[m.id] || "-"; const p = cur.split("-"); setRes(m.id, `${e.target.value}-${p[1] ?? ""}`); }} />
+                  <span style={{ color: "#f39c12", fontWeight: "bold" }}>—</span>
+                  <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T"
+                    value={results[m.id]?.split("-")[1] ?? ""}
+                    onChange={e => { const cur = results[m.id] || "-"; const p = cur.split("-"); setRes(m.id, `${p[0] ?? ""}-${e.target.value}`); }} />
+                  {m.result && <span style={styles.savedBadge}>✅ {m.result}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button style={{ ...styles.btnPrimary, opacity: saving ? 0.6 : 1 }} onClick={saveResults} disabled={saving}>
+            {saving ? "⏳ Opslaan..." : "💾 Bewaar uitslagen"}
+          </button>
+        </>
+      )}
+
+      {activeAdminTab === "knockout" && (
+        <>
+          <div style={styles.adminNote}>
+            ⚠️ Vul eerst de ploegnamen in. Zodra de ploegen bekend zijn kunnen deelnemers hun pronostiek ingeven. Vul daarna de uitslag in na elke wedstrijd.
+          </div>
+          <div style={styles.groupTabs}>
+            {KNOCKOUT_ROUNDS.map(r => (
+              <button key={r} style={{ ...styles.groupTab, ...(r === activeKnockoutRound ? styles.groupTabActive : {}) }}
+                onClick={() => setActiveKnockoutRound(r)}>{r}</button>
+            ))}
+          </div>
+          <div style={styles.matchList}>
+            <div style={styles.groupHeader}>🏆 {activeKnockoutRound}</div>
+            {knockoutMatches.filter(m => m.round === activeKnockoutRound).map(m => (
+              <div key={m.id} style={styles.adminMatchCard}>
+                <div style={styles.matchDateSmall}>📅 {m.date} · Match {m.matchNum}</div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8, flexWrap: "wrap" }}>
+                  <input style={{ ...styles.input, flex: 1, minWidth: 110, padding: "8px 10px", fontSize: 13 }}
+                    placeholder="Thuisploeg" value={knockoutTeams[`${m.id}_home`] || ""}
+                    onChange={e => setKnockoutTeams(prev => ({ ...prev, [`${m.id}_home`]: e.target.value }))} />
+                  <span style={{ color: "#f39c12", fontWeight: 900 }}>vs</span>
+                  <input style={{ ...styles.input, flex: 1, minWidth: 110, padding: "8px 10px", fontSize: 13 }}
+                    placeholder="Uitploeg" value={knockoutTeams[`${m.id}_away`] || ""}
+                    onChange={e => setKnockoutTeams(prev => ({ ...prev, [`${m.id}_away`]: e.target.value }))} />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
+                  <span style={{ fontSize: 13, color: "#bdc3c7" }}>Uitslag:</span>
+                  <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T"
+                    value={knockoutResults[m.id]?.split("-")[0] ?? ""}
+                    onChange={e => { const cur = knockoutResults[m.id] || "-"; const p = cur.split("-"); setKnockoutResults(prev => ({ ...prev, [m.id]: `${e.target.value}-${p[1] ?? ""}` })); }} />
+                  <span style={{ color: "#f39c12", fontWeight: "bold" }}>—</span>
+                  <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T"
+                    value={knockoutResults[m.id]?.split("-")[1] ?? ""}
+                    onChange={e => { const cur = knockoutResults[m.id] || "-"; const p = cur.split("-"); setKnockoutResults(prev => ({ ...prev, [m.id]: `${p[0] ?? ""}-${e.target.value}` })); }} />
+                  {m.result && <span style={styles.savedBadge}>✅ {m.result}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button style={{ ...styles.btnPrimary, opacity: saving ? 0.6 : 1 }} onClick={saveKnockout} disabled={saving}>
+            {saving ? "⏳ Opslaan..." : "💾 Bewaar knock-out wedstrijden"}
+          </button>
+        </>
+      )}
+
+      {activeAdminTab === "scorer" && (
+        <div style={styles.scorerAdmin}>
+        <h3 style={styles.scorerAdminTitle}>⚽ Topscorer doelpunten</h3>
         <h3 style={styles.scorerAdminTitle}>⚽ Topscorer doelpunten</h3>
         <div style={styles.scorerRow}>
           <select style={styles.select} value={scorerInput} onChange={e => setScorerInput(e.target.value)}>
@@ -877,6 +1134,7 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 }
@@ -1052,3 +1310,4 @@ const styles = {
   scorerOverview: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 },
   scorerChip: { background: "rgba(243,156,18,0.15)", border: "1px solid rgba(243,156,18,0.3)", padding: "6px 12px", borderRadius: 20, fontSize: 13, color: "#f39c12" },
 };
+
