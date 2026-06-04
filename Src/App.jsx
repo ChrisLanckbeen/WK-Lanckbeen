@@ -263,7 +263,6 @@ function useFirebaseDoc(docPath, defaultValue) {
 }
 
 export default function App() {
-
   const { data: sharedData, loading, save: saveShared } = useFirebaseDoc("wk/shared", {
     matches: INITIAL_MATCHES, knockoutMatches: INITIAL_KNOCKOUT_MATCHES, topScorerGoals: {}, globalLock: false,
   });
