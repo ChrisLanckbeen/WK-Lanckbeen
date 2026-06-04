@@ -120,7 +120,9 @@ function generateMatches() {
   matches.push({ id: id++, group: "L", home: "Kroatië",  away: "Ghana",    date: "27 jun", result: null });
 
   return matches;
-  const KNOCKOUT_ROUNDS = ["Zestiende finale", "Achtste finale", "Kwartfinale", "Halve finale", "Finale"];
+}
+
+const KNOCKOUT_ROUNDS = ["Zestiende finale", "Achtste finale", "Kwartfinale", "Halve finale", "Finale"];
 
 const INITIAL_KNOCKOUT_MATCHES = [
   { id: 900, round: "Zestiende finale", matchNum: 1, home: "TBD", away: "TBD", date: "28 jun", result: null },
@@ -513,7 +515,6 @@ function RegisterView({ players, setPlayers, setView, setActivePlayer, notify })
   );
 }
 
-}
 function PredictView({ players, matches, activePlayer, setActivePlayer, activeGroup, setActiveGroup, setPlayers, notify, globalLock }) {
   const player = players.find(p => p.id === activePlayer) || players[0];
   const [pendingPreds, setPendingPreds] = useState({});
