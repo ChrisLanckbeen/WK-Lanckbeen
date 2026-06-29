@@ -222,6 +222,38 @@ function calcPoints(player, matches) {
   return { pts, details };
 }
 
+function calcKnockoutPoints(player, knockoutMatches) {
+  let pts = 0;
+  const details = [];
+  knockoutMatches.forEach(m => {
+    if (!m.result) return;
+    const pred = player.knockoutPredictions?.[m.id];
+    if (!pred) return;
+    if (m.penaltyWinner) {
+      const penaltyPick = player.knockoutPenalties?.[m.id];
+      if (penaltyPick && penaltyPick === m.penaltyWinner) {
+        pts += 3;
+        details.push({ match: `${m.home} vs ${m.away}`, pts: 3, reason: "Strafschoppen correct 🥅" });
+      }
+    } else {
+      const [rh, ra] = m.result.split("-").map(Number);
+      const [ph, pa] = pred.split("-").map(Number);
+      if (rh === ph && ra === pa) {
+        pts += 3;
+        details.push({ match: `${m.home} vs ${m.away}`, pts: 3, reason: "Correcte uitslag ✅" });
+      } else {
+        const rWin = rh > ra ? "home" : ra > rh ? "away" : "draw";
+        const pWin = ph > pa ? "home" : pa > ph ? "away" : "draw";
+        if (rWin === pWin) {
+          pts += 1;
+          details.push({ match: `${m.home} vs ${m.away}`, pts: 1, reason: "Juiste winnaar 👍" });
+        }
+      }
+    }
+  });
+  return { pts, details };
+}
+
 function getPredScore(pred, result) {
   if (!pred || !result) return null;
   const [rh, ra] = result.split("-").map(Number);
@@ -294,9 +326,10 @@ export default function App() {
   function getRanking() {
     return players.map((p) => {
       const { pts, details } = calcPoints(p, matches);
+      const { pts: knockoutPts, details: knockoutDetails } = calcKnockoutPoints(p, knockoutMatches);
       let scorerPts = 0;
       if (p.topScorer && topScorerGoals[p.topScorer]) scorerPts = topScorerGoals[p.topScorer];
-      return { ...p, pts: pts + scorerPts, matchPts: pts, scorerPts, details };
+      return { ...p, pts: pts + knockoutPts + scorerPts, matchPts: pts, knockoutPts, scorerPts, details: [...details, ...knockoutDetails] };
     }).sort((a, b) => b.pts - a.pts);
   }
 
@@ -698,9 +731,21 @@ function KnockoutView({ players, knockoutMatches, activePlayer, setActivePlayer,
               {m.result && (
                 <div style={styles.resultRow}>
                   <span style={styles.resultBadge}>✅ Officiële uitslag: <b>{m.result}</b></span>
-                  {score === "exact" && <span style={styles.scoreBadgeExact}>+3 🎯 Raak!</span>}
-                  {score === "winner" && <span style={styles.scoreBadgeWinner}>+1 👍 Winnaar</span>}
-                  {score === "wrong" && hasPred && <span style={styles.scoreBadgeWrong}>0 pts ❌</span>}
+                  {m.penaltyWinner ? (
+                    (() => {
+                      const penaltyPick = pendingPenalties[m.id];
+                      const correct = penaltyPick && penaltyPick === m.penaltyWinner;
+                      return correct
+                        ? <span style={styles.scoreBadgeExact}>+3 🥅 Strafschoppen correct!</span>
+                        : hasPred ? <span style={styles.scoreBadgeWrong}>0 pts ❌</span> : null;
+                    })()
+                  ) : (
+                    <>
+                      {score === "exact" && <span style={styles.scoreBadgeExact}>+3 🎯 Raak!</span>}
+                      {score === "winner" && <span style={styles.scoreBadgeWinner}>+1 👍 Winnaar</span>}
+                      {score === "wrong" && hasPred && <span style={styles.scoreBadgeWrong}>0 pts ❌</span>}
+                    </>
+                  )}
                 </div>
               )}
               {m.penaltyWinner && (
