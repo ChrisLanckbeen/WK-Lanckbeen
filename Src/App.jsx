@@ -837,6 +837,12 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
     setScorerInput(""); setScorerGoalCount("");
   }
 
+  async function resetZestiendeFinale() {
+    if (!window.confirm("Zestiende finale resetten naar de 16 echte wedstrijden? Dit overschrijft de huidige Firebase data.")) return;
+    await setKnockoutMatches(() => INITIAL_KNOCKOUT_MATCHES);
+    notify("Zestiende finale gereset naar de 16 echte wedstrijden! ✅");
+  }
+
   return (
     <div style={styles.section}>
       <h2 style={styles.sectionTitle}>🔧 Admin — Tom's beheer</h2>
@@ -851,6 +857,16 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
             {globalLock ? "🔓 Ingave openstellen" : "🔒 Ingave blokkeren"}
           </button>
         </div>
+      </div>
+      <div style={{ ...styles.adminNote, background: "rgba(231,76,60,0.08)", border: "1px solid #e74c3c", color: "#e74c3c", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 2 }}>🔄 Reset zestiende finale</div>
+          <div style={{ fontSize: 12, opacity: 0.85 }}>Overschrijft Firebase met de 16 echte wedstrijden (verwijdert de 32 lege TBD-wedstrijden).</div>
+        </div>
+        <button style={{ background: "#e74c3c", border: "none", color: "white", padding: "10px 18px", borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer" }}
+          onClick={resetZestiendeFinale}>
+          🔄 Reset nu
+        </button>
       </div>
       <div style={styles.groupTabs}>
         <button style={{ ...styles.groupTab, ...(activeAdminTab === "groep" ? styles.groupTabActive : {}) }} onClick={() => setActiveAdminTab("groep")}>⚽ Groepsfase</button>
