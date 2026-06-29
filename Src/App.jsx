@@ -596,24 +596,34 @@ function PredictView({ players, matches, activePlayer, setActivePlayer, activeGr
 function KnockoutView({ players, knockoutMatches, activePlayer, setActivePlayer, setPlayers, notify, globalLock }) {
   const player = players.find(p => p.id === activePlayer) || players[0];
   const [pendingPreds, setPendingPreds] = useState({});
+  const [pendingPenalties, setPendingPenalties] = useState({});
   const [activeRound, setActiveRound] = useState("Zestiende finale");
   const [saving, setSaving] = useState(false);
   const roundIcons = { "Zestiende finale": "⚔️", "Achtste finale": "⚔️", "Kwartfinale": "🥊", "Halve finale": "🔥", "Finale": "🏆" };
 
-  useEffect(() => { setPendingPreds(player?.knockoutPredictions || {}); }, [activePlayer, player?.id]);
+  useEffect(() => {
+    setPendingPreds(player?.knockoutPredictions || {});
+    setPendingPenalties(player?.knockoutPenalties || {});
+  }, [activePlayer, player?.id]);
 
   function setPred(matchId, val) { setPendingPreds(prev => ({ ...prev, [matchId]: val })); }
+  function setPenalty(matchId, team) { setPendingPenalties(prev => ({ ...prev, [matchId]: team })); }
 
   async function savePreds() {
     if (!player) return;
     if (globalLock) { notify("Ingave is geblokkeerd door Tom! 🔒", "error"); return; }
     setSaving(true);
     const merged = { ...(player.knockoutPredictions || {}) };
+    const mergedPenalties = { ...(player.knockoutPenalties || {}) };
     Object.entries(pendingPreds).forEach(([mid, val]) => {
       const m = knockoutMatches.find(x => x.id === parseInt(mid));
       if (m && !m.result && m.home !== "TBD") merged[mid] = val;
     });
-    await setPlayers(ps => ps.map(p => p.id === player.id ? { ...p, knockoutPredictions: merged } : p));
+    Object.entries(pendingPenalties).forEach(([mid, val]) => {
+      const m = knockoutMatches.find(x => x.id === parseInt(mid));
+      if (m && !m.result && m.home !== "TBD") mergedPenalties[mid] = val;
+    });
+    await setPlayers(ps => ps.map(p => p.id === player.id ? { ...p, knockoutPredictions: merged, knockoutPenalties: mergedPenalties } : p));
     notify("Knock-out pronostieken opgeslagen! 💾"); setSaving(false);
   }
 
@@ -667,12 +677,35 @@ function KnockoutView({ players, knockoutMatches, activePlayer, setActivePlayer,
                 </div>
                 <span style={{ ...styles.teamName, textAlign: "right" }}>{m.away} {FLAG_EMOJI[m.away] || ""}</span>
               </div>
+              {(() => {
+                const parts = pred.split("-");
+                const isDraw = parts.length === 2 && parts[0] !== "" && parts[1] !== "" && parts[0] === parts[1];
+                const penalty = pendingPenalties[m.id] || "";
+                if (!isLocked && isDraw && !isTBD) return (
+                  <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 12, color: "#bdc3c7", fontWeight: 600 }}>🥅 Wie wint op strafschoppen?</span>
+                    <button style={{ ...styles.penaltyBtn, ...(penalty === m.home ? styles.penaltyBtnActive : {}) }} onClick={() => setPenalty(m.id, m.home)}>{FLAG_EMOJI[m.home] || ""} {m.home}</button>
+                    <button style={{ ...styles.penaltyBtn, ...(penalty === m.away ? styles.penaltyBtnActive : {}) }} onClick={() => setPenalty(m.id, m.away)}>{FLAG_EMOJI[m.away] || ""} {m.away}</button>
+                  </div>
+                );
+                if (isLocked && hasPred && isDraw && penalty) return (
+                  <div style={{ marginTop: 6, fontSize: 12, color: "#bdc3c7" }}>
+                    🥅 Jouw strafschoppenwinnaar: <b style={{ color: "#f39c12" }}>{FLAG_EMOJI[penalty] || ""} {penalty}</b>
+                  </div>
+                );
+                return null;
+              })()}
               {m.result && (
                 <div style={styles.resultRow}>
                   <span style={styles.resultBadge}>✅ Officiële uitslag: <b>{m.result}</b></span>
                   {score === "exact" && <span style={styles.scoreBadgeExact}>+3 🎯 Raak!</span>}
                   {score === "winner" && <span style={styles.scoreBadgeWinner}>+1 👍 Winnaar</span>}
                   {score === "wrong" && hasPred && <span style={styles.scoreBadgeWrong}>0 pts ❌</span>}
+                </div>
+              )}
+              {m.penaltyWinner && (
+                <div style={{ marginTop: 4, fontSize: 12, color: "#f39c12", fontWeight: 700 }}>
+                  🥅 Gewonnen op strafschoppen: {FLAG_EMOJI[m.penaltyWinner] || ""} <b>{m.penaltyWinner}</b>
                 </div>
               )}
             </div>
@@ -793,6 +826,7 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
   const [results, setResults] = useState({});
   const [knockoutResults, setKnockoutResults] = useState({});
   const [knockoutTeams, setKnockoutTeams] = useState({});
+  const [knockoutPenalties, setKnockoutPenalties] = useState({});
   const [scorerInput, setScorerInput] = useState("");
   const [scorerGoalCount, setScorerGoalCount] = useState("");
   const [saving, setSaving] = useState(false);
@@ -804,13 +838,14 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
     const init = {};
     matches.forEach(m => { if (m.result) init[m.id] = m.result; });
     setResults(init);
-    const kinit = {}, tinit = {};
+    const kinit = {}, tinit = {}, pinit = {};
     knockoutMatches.forEach(m => {
       if (m.result) kinit[m.id] = m.result;
       tinit[`${m.id}_home`] = m.home !== "TBD" ? m.home : "";
       tinit[`${m.id}_away`] = m.away !== "TBD" ? m.away : "";
+      if (m.penaltyWinner) pinit[m.id] = m.penaltyWinner;
     });
-    setKnockoutResults(kinit); setKnockoutTeams(tinit);
+    setKnockoutResults(kinit); setKnockoutTeams(tinit); setKnockoutPenalties(pinit);
   }, [matches, knockoutMatches]);
 
   async function saveResults() {
@@ -826,6 +861,7 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
       home: knockoutTeams[`${m.id}_home`] || m.home || "TBD",
       away: knockoutTeams[`${m.id}_away`] || m.away || "TBD",
       result: knockoutResults[m.id] || null,
+      penaltyWinner: knockoutPenalties[m.id] || m.penaltyWinner || null,
     })));
     notify("Knock-out wedstrijden opgeslagen! ✅"); setSaving(false);
   }
@@ -915,6 +951,22 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
                   <input style={styles.adminScoreBox} type="number" min="0" max="20" placeholder="T" value={knockoutResults[m.id]?.split("-")[1] ?? ""} onChange={e => { const cur = knockoutResults[m.id] || "-"; const p = cur.split("-"); setKnockoutResults(prev => ({ ...prev, [m.id]: `${p[0] ?? ""}-${e.target.value}` })); }} />
                   {m.result && <span style={styles.savedBadge}>✅ {m.result}</span>}
                 </div>
+                {(() => {
+                  const res = knockoutResults[m.id] || "";
+                  const parts = res.split("-");
+                  const homeTeam = knockoutTeams[`${m.id}_home`] || m.home;
+                  const awayTeam = knockoutTeams[`${m.id}_away`] || m.away;
+                  const isDraw = parts.length === 2 && parts[0] !== "" && parts[1] !== "" && parts[0] === parts[1];
+                  const penalty = knockoutPenalties[m.id] || "";
+                  if (!isDraw || homeTeam === "TBD" || awayTeam === "TBD") return null;
+                  return (
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+                      <span style={{ fontSize: 12, color: "#bdc3c7" }}>🥅 Strafschoppen gewonnen door:</span>
+                      <button style={{ ...styles.penaltyBtn, ...(penalty === homeTeam ? styles.penaltyBtnActive : {}) }} onClick={() => setKnockoutPenalties(prev => ({ ...prev, [m.id]: homeTeam }))}>{FLAG_EMOJI[homeTeam] || ""} {homeTeam}</button>
+                      <button style={{ ...styles.penaltyBtn, ...(penalty === awayTeam ? styles.penaltyBtnActive : {}) }} onClick={() => setKnockoutPenalties(prev => ({ ...prev, [m.id]: awayTeam }))}>{FLAG_EMOJI[awayTeam] || ""} {awayTeam}</button>
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -1035,6 +1087,8 @@ const styles = {
   selectorPhoto: { width: 24, height: 24, borderRadius: "50%", objectFit: "cover" },
   lockInfoBox: { background: "rgba(231,76,60,0.08)", border: "1px solid rgba(231,76,60,0.3)", borderRadius: 10, padding: "10px 16px", fontSize: 13, color: "#e74c3c" },
   globalLockBox: { background: "rgba(231,76,60,0.15)", border: "2px solid #e74c3c", borderRadius: 12, padding: "14px 18px", fontSize: 14, color: "#e74c3c" },
+  penaltyBtn: { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.25)", color: "#ecf0f1", padding: "6px 14px", borderRadius: 20, fontSize: 12, cursor: "pointer" },
+  penaltyBtnActive: { background: "#f39c12", border: "1px solid #f39c12", color: "#0a1628", fontWeight: 700 },
   groupTabs: { display: "flex", gap: 4, overflowX: "auto", paddingBottom: 4, flexWrap: "wrap" },
   groupTab: { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#bdc3c7", padding: "8px 12px", borderRadius: 8, cursor: "pointer", fontSize: 13, whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 6 },
   groupTabActive: { background: "rgba(243,156,18,0.2)", border: "1px solid #f39c12", color: "#f39c12", fontWeight: 700 },
