@@ -935,9 +935,17 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
   }
 
   async function resetZestiendeFinale() {
-    if (!window.confirm("Zestiende finale resetten naar de 16 echte wedstrijden? Dit overschrijft de huidige Firebase data.")) return;
-    await setKnockoutMatches(() => INITIAL_KNOCKOUT_MATCHES);
-    notify("Zestiende finale gereset naar de 16 echte wedstrijden! ✅");
+    if (!window.confirm("Knock-out wedstrijden bijwerken met de laatste ploegnamen? Bestaande uitslagen blijven bewaard.")) return;
+    await setKnockoutMatches(prev => {
+      const prevMap = {};
+      (prev || []).forEach(m => { prevMap[m.id] = m; });
+      return INITIAL_KNOCKOUT_MATCHES.map(m => ({
+        ...m,
+        result: prevMap[m.id]?.result ?? null,
+        penaltyWinner: prevMap[m.id]?.penaltyWinner ?? null,
+      }));
+    });
+    notify("Ploegnamen bijgewerkt, uitslagen bewaard! ✅");
   }
 
   return (
