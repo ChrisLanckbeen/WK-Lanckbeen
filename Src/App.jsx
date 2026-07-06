@@ -321,7 +321,8 @@ export default function App() {
       const { pts: knockoutPts, details: knockoutDetails } = calcKnockoutPoints(p, knockoutMatches);
       let scorerPts = 0;
       if (p.topScorer && topScorerGoals[p.topScorer]) scorerPts = topScorerGoals[p.topScorer];
-      return { ...p, pts: pts + knockoutPts + scorerPts, matchPts: pts, knockoutPts, scorerPts, details: [...details, ...knockoutDetails] };
+      const bonusPts = p.bonusPts ?? 0;
+      return { ...p, pts: pts + knockoutPts + scorerPts + bonusPts, matchPts: pts, knockoutPts, scorerPts, bonusPts, details: [...details, ...knockoutDetails] };
     }).sort((a, b) => b.pts - a.pts);
   }
 
@@ -855,7 +856,7 @@ function RankingView({ getRanking, topScorerGoals }) {
               <div style={styles.rankInfo}>
                 <div style={styles.rankName}>{p.name}</div>
                 <div style={styles.rankSub}>⚽ {p.topScorer}</div>
-                <div style={styles.rankSub}>🎯 Groepsfase: {p.matchPts}pts · 🏆 Knock-out: {p.knockoutPts ?? 0}pts · ⚽ Scorer: {p.scorerPts}pts</div>
+                <div style={styles.rankSub}>🎯 Groepsfase: {p.matchPts}pts · 🏆 Knock-out: {p.knockoutPts ?? 0}pts · ⚽ Scorer: {p.scorerPts}pts{p.bonusPts > 0 ? ` · 🎁 Bonus: ${p.bonusPts}pts` : ""}</div>
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={styles.rankPts}>{p.pts}<span style={styles.rankPtsSub}>pts</span></div>
@@ -977,6 +978,7 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
         <button style={{ ...styles.groupTab, ...(activeAdminTab === "groep" ? styles.groupTabActive : {}) }} onClick={() => setActiveAdminTab("groep")}>⚽ Groepsfase</button>
         <button style={{ ...styles.groupTab, ...(activeAdminTab === "knockout" ? styles.groupTabActive : {}) }} onClick={() => setActiveAdminTab("knockout")}>🏆 Knock-out</button>
         <button style={{ ...styles.groupTab, ...(activeAdminTab === "scorer" ? styles.groupTabActive : {}) }} onClick={() => setActiveAdminTab("scorer")}>🥅 Topscorer</button>
+        <button style={{ ...styles.groupTab, ...(activeAdminTab === "bonus" ? styles.groupTabActive : {}) }} onClick={() => setActiveAdminTab("bonus")}>🎁 Bonus</button>
       </div>
       {activeAdminTab === "groep" && (
         <>
@@ -1058,6 +1060,51 @@ function AdminView({ matches, setMatches, players, topScorerGoals, setTopScorerG
           </div>
         </div>
       )}
+      {activeAdminTab === "bonus" && (
+        <BonusTab players={players} setPlayers={setPlayers} notify={notify} />
+      )}
+    </div>
+  );
+}
+
+function BonusTab({ players, setPlayers, notify }) {
+  const [bonusInputs, setBonusInputs] = useState(() => {
+    const init = {};
+    players.forEach(p => { init[p.id] = p.bonusPts ?? 0; });
+    return init;
+  });
+  const [saving, setSaving] = useState(false);
+
+  async function saveBonus() {
+    setSaving(true);
+    await setPlayers(ps => ps.map(p => ({ ...p, bonusPts: Number(bonusInputs[p.id] ?? 0) })));
+    notify("Bonuspunten opgeslagen! 🎁"); setSaving(false);
+  }
+
+  return (
+    <div style={styles.scorerAdmin}>
+      <h3 style={styles.scorerAdminTitle}>🎁 Manuele bonuspunten</h3>
+      <div style={{ fontSize: 13, color: "#bdc3c7", marginBottom: 14 }}>Gebruik dit om verloren punten te compenseren of andere correcties te maken. Deze punten tellen mee in het totaal.</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {players.map(p => (
+          <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: "10px 14px" }}>
+            {p.photo ? <img src={p.photo} alt={p.name} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} /> : <span>👤</span>}
+            <span style={{ flex: 1, fontWeight: 600, color: "white" }}>{p.name}</span>
+            <input
+              type="number"
+              min="-50"
+              max="100"
+              style={{ ...styles.adminScoreBox, width: 70 }}
+              value={bonusInputs[p.id] ?? 0}
+              onChange={e => setBonusInputs(prev => ({ ...prev, [p.id]: e.target.value }))}
+            />
+            <span style={{ fontSize: 13, color: "#bdc3c7" }}>pts</span>
+          </div>
+        ))}
+      </div>
+      <button style={{ ...styles.btnPrimary, marginTop: 16, opacity: saving ? 0.6 : 1 }} onClick={saveBonus} disabled={saving}>
+        {saving ? "⏳ Opslaan..." : "💾 Bewaar bonuspunten"}
+      </button>
     </div>
   );
 }
