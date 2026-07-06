@@ -750,6 +750,30 @@ function KnockoutView({ players, knockoutMatches, activePlayer, setActivePlayer,
         })}
       </div>
       <button style={{ ...styles.btnPrimary, opacity: saving ? 0.6 : 1 }} onClick={savePreds} disabled={saving}>{saving ? "⏳ Opslaan..." : "💾 Bewaar knock-out voorspellingen"}</button>
+      {(() => {
+        const playedMatches = roundMatches.filter(m => m.result);
+        if (playedMatches.length === 0) return null;
+        const roundRanking = players.map(p => {
+          const { pts } = calcKnockoutPoints(p, playedMatches);
+          return { ...p, roundPts: pts };
+        }).sort((a, b) => b.roundPts - a.roundPts);
+        const medals = ["🥇", "🥈", "🥉"];
+        return (
+          <div style={{ marginTop: 24 }}>
+            <div style={{ ...styles.groupHeader, marginBottom: 8 }}>📊 Tussenstand — {activeRound}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {roundRanking.map((p, i) => (
+                <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: "8px 14px", border: i === 0 ? "1px solid #f39c12" : "1px solid rgba(255,255,255,0.08)" }}>
+                  <span style={{ fontSize: 18, minWidth: 28 }}>{medals[i] || `${i + 1}`}</span>
+                  {p.photo ? <img src={p.photo} alt={p.name} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} /> : <span>👤</span>}
+                  <span style={{ flex: 1, fontWeight: 600, fontSize: 14, color: "white" }}>{p.name}</span>
+                  <span style={{ fontWeight: 800, fontSize: 16, color: p.roundPts > 0 ? "#f39c12" : "#7f8c8d" }}>{p.roundPts} pts</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -831,7 +855,7 @@ function RankingView({ getRanking, topScorerGoals }) {
               <div style={styles.rankInfo}>
                 <div style={styles.rankName}>{p.name}</div>
                 <div style={styles.rankSub}>⚽ {p.topScorer}</div>
-                <div style={styles.rankSub}>🎯 Wedstrijden: {p.matchPts}pts · ⚽ Scorer: {p.scorerPts}pts</div>
+                <div style={styles.rankSub}>🎯 Groepsfase: {p.matchPts}pts · 🏆 Knock-out: {p.knockoutPts ?? 0}pts · ⚽ Scorer: {p.scorerPts}pts</div>
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={styles.rankPts}>{p.pts}<span style={styles.rankPtsSub}>pts</span></div>
