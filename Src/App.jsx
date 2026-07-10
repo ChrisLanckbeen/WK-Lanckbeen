@@ -192,7 +192,7 @@ function calcPoints(player, matches) {
   matches.forEach((m) => {
     if (!m.result) return;
     const pred = player.predictions?.[m.id];
-    if (!pred) return;
+    if (!pred || !pred.includes("-") || pred.split("-")[0] === "" || pred.split("-")[1] === "") return;
     const [rh, ra] = m.result.split("-").map(Number);
     const [ph, pa] = pred.split("-").map(Number);
     if (rh === ph && ra === pa) {
