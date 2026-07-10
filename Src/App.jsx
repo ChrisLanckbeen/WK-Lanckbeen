@@ -197,7 +197,7 @@ function calcPoints(player, matches) {
     if (parts[0] === "" || parts[1] === "") return;
     const [rh, ra] = m.result.split("-").map(Number);
     const [ph, pa] = parts.map(Number);
-    if (isNaN(ph) || isNaN(pa)) return;
+    if (!Number.isFinite(ph) || !Number.isFinite(pa) || ph < 0 || pa < 0) return;
     if (rh === ph && ra === pa) {
       pts += 3;
       details.push({ match: `${m.home} vs ${m.away}`, pts: 3, reason: "Correcte uitslag ✅" });
@@ -231,7 +231,7 @@ function calcKnockoutPoints(player, knockoutMatches) {
     } else {
       const [rh, ra] = m.result.split("-").map(Number);
       const [ph, pa] = parts.map(Number);
-      if (isNaN(ph) || isNaN(pa)) return;
+      if (!Number.isFinite(ph) || !Number.isFinite(pa) || ph < 0 || pa < 0) return;
       if (rh === ph && ra === pa) {
         pts += 3;
         details.push({ match: `${m.home} vs ${m.away}`, pts: 3, reason: "Correcte uitslag ✅" });
