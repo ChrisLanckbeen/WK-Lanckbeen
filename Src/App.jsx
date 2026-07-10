@@ -192,12 +192,10 @@ function calcPoints(player, matches) {
   matches.forEach((m) => {
     if (!m.result) return;
     const pred = player.predictions?.[m.id];
-    if (!pred || !pred.includes("-")) return;
+    if (!pred || !/^\d+-\d+$/.test(pred)) return;
     const parts = pred.split("-");
-    if (parts[0] === "" || parts[1] === "") return;
     const [rh, ra] = m.result.split("-").map(Number);
     const [ph, pa] = parts.map(Number);
-    if (!Number.isFinite(ph) || !Number.isFinite(pa) || ph < 0 || pa < 0) return;
     if (rh === ph && ra === pa) {
       pts += 3;
       details.push({ match: `${m.home} vs ${m.away}`, pts: 3, reason: "Correcte uitslag ✅" });
@@ -219,9 +217,8 @@ function calcKnockoutPoints(player, knockoutMatches) {
   knockoutMatches.forEach(m => {
     if (!m.result) return;
     const pred = player.knockoutPredictions?.[m.id];
-    if (!pred || !pred.includes("-")) return;
+    if (!pred || !/^\d+-\d+$/.test(pred)) return;
     const parts = pred.split("-");
-    if (parts[0] === "" || parts[1] === "") return;
     if (m.penaltyWinner) {
       const penaltyPick = player.knockoutPenalties?.[m.id];
       if (penaltyPick && penaltyPick === m.penaltyWinner) {
