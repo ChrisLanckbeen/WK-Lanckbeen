@@ -192,6 +192,7 @@ function calcPoints(player, matches) {
   matches.forEach((m) => {
     if (!m.result) return;
     const pred = player.predictions?.[m.id];
+    console.log("[calcPoints] match", m.id, "pred:", JSON.stringify(pred));
     if (!pred || !/^\d+-\d+$/.test(pred)) return;
     const parts = pred.split("-");
     const [rh, ra] = m.result.split("-").map(Number);
@@ -217,6 +218,7 @@ function calcKnockoutPoints(player, knockoutMatches) {
   knockoutMatches.forEach(m => {
     if (!m.result) return;
     const pred = player.knockoutPredictions?.[m.id];
+    console.log("[calcKnockoutPoints] match", m.id, "pred:", JSON.stringify(pred));
     if (!pred || !/^\d+-\d+$/.test(pred)) return;
     const parts = pred.split("-");
     if (m.penaltyWinner) {
@@ -543,7 +545,7 @@ function PredictView({ players, matches, activePlayer, setActivePlayer, activeGr
     const merged = { ...player.predictions };
     Object.entries(pendingPreds).forEach(([mid, val]) => {
       const m = matches.find(x => x.id === parseInt(mid));
-      if (m && !m.result) merged[mid] = val;
+      if (m && !m.result && /^\d+-\d+$/.test(val || "")) merged[mid] = val;
     });
     await setPlayers(ps => ps.map(p => p.id === player.id ? { ...p, predictions: merged } : p));
     notify("Pronostieken opgeslagen! 💾"); setSaving(false);
@@ -642,7 +644,7 @@ function KnockoutView({ players, knockoutMatches, activePlayer, setActivePlayer,
     const mergedPenalties = { ...(player.knockoutPenalties || {}) };
     Object.entries(pendingPreds).forEach(([mid, val]) => {
       const m = knockoutMatches.find(x => x.id === parseInt(mid));
-      if (m && !m.result && m.home !== "TBD") merged[mid] = val;
+      if (m && !m.result && m.home !== "TBD" && /^\d+-\d+$/.test(val || "")) merged[mid] = val;
     });
     Object.entries(pendingPenalties).forEach(([mid, val]) => {
       const m = knockoutMatches.find(x => x.id === parseInt(mid));
