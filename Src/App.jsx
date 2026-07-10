@@ -193,7 +193,7 @@ function calcPoints(player, matches) {
     if (!m.result) return;
     const pred = player.predictions?.[m.id];
     console.log("[calcPoints] match", m.id, "pred:", JSON.stringify(pred));
-    if (!pred || !/^\d+-\d+$/.test(pred)) return;
+    if (!pred || !/^\d+-\d+$/.test(pred.trim())) return;
     const parts = pred.split("-");
     const [rh, ra] = m.result.split("-").map(Number);
     const [ph, pa] = parts.map(Number);
@@ -219,7 +219,7 @@ function calcKnockoutPoints(player, knockoutMatches) {
     if (!m.result) return;
     const pred = player.knockoutPredictions?.[m.id];
     console.log("[calcKnockoutPoints] match", m.id, "pred:", JSON.stringify(pred));
-    if (!pred || !/^\d+-\d+$/.test(pred)) return;
+    if (!pred || !/^\d+-\d+$/.test(pred.trim())) return;
     const parts = pred.split("-");
     if (m.penaltyWinner) {
       const penaltyPick = player.knockoutPenalties?.[m.id];
