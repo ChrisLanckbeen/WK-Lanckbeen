@@ -155,8 +155,7 @@ const INITIAL_KNOCKOUT_MATCHES = [
   { id: 1020, round: "Kwartfinale", matchNum: 4, home: "Argentinië", away: "Zwitserland", date: "12 jul 03:00", result: null },
   { id: 1025, round: "Halve finale", matchNum: 1, home: "Frankrijk",  away: "Spanje",      date: "14 jul 21:00", result: null },
   { id: 1026, round: "Halve finale", matchNum: 2, home: "Engeland",   away: "Argentinië",  date: "15 jul 21:00", result: null },
-  { id: 1030, round: "Troostfinale", matchNum: 1, home: "TBD",    away: "TBD",         date: "18 jul", result: null },
-  { id: 1029, round: "Finale",       matchNum: 2, home: "Spanje", away: "Argentinië",  date: "19 jul 21:00", result: null },
+  { id: 1029, round: "Finale",       matchNum: 1, home: "Spanje", away: "Argentinië",  date: "19 jul 21:00", result: null },
 ];
 
 const INITIAL_MATCHES = generateMatches();
